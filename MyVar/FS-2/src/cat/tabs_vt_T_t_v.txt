@@ -1,0 +1,3 @@
+Hello^AWorld
+This	is	a	tab
+Newline$

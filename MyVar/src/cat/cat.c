@@ -11,22 +11,29 @@ void print_usage() {
     printf("Options:\n");
     printf("  -b, --number-nonblank   number non-blank lines\n");
     printf("  -e                      display $ at end of each line\n");
+    printf("  -E                      display $ at end of each line\n");
     printf("  -n, --number            number all lines\n");
     printf("  -s, --squeeze-blank     suppress repeated empty lines\n");
     printf("  -t                      display TAB characters as ^I\n");
+    printf("  -T                      display TAB characters as ^I\n");
+    printf("  -v                      use ^ and M- notation, except for LFD and TAB\n");
 }
 
 int main(int argc, char *argv[]) {
     int opt;
-    int flag_b = 0, flag_e = 0, flag_n = 0, flag_s = 0, flag_t = 0;
+    int flag_b = 0, flag_e = 0, flag_E = 0, flag_n = 0, flag_s = 0, flag_t = 0, flag_T = 0, flag_v = 0;
     
-    while ((opt = getopt(argc, argv, "benst")) != -1) {
+    while ((opt = getopt(argc, argv, "benstTEv")) != -1) {
         switch (opt) {
             case 'b':
                 flag_b = 1;
                 break;
             case 'e':
                 flag_e = 1;
+                flag_v = 1;
+                break;
+            case 'E':
+                flag_E = 1;
                 break;
             case 'n':
                 flag_n = 1;
@@ -36,6 +43,13 @@ int main(int argc, char *argv[]) {
                 break;
             case 't':
                 flag_t = 1;
+                flag_v = 1;
+                break;
+            case 'T':
+                flag_T = 1;
+                break;
+            case 'v':
+                flag_v = 1;
                 break;
             default:
                 print_usage();
@@ -54,14 +68,14 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Cannot open file: %s\n", argv[i]);
             continue;
         }
-        process_file(file, flag_b, flag_e, flag_n, flag_s, flag_t);
+        process_file(file, flag_b, flag_e, flag_E, flag_n, flag_s, flag_t, flag_T, flag_v);
         fclose(file);
     }
 
     return EXIT_SUCCESS;
 }
 
-void process_file(FILE *file, int flag_b, int flag_e, int flag_n, int flag_s, int flag_t) {
+void process_file(FILE *file, int flag_b, int flag_e, int flag_E, int flag_n, int flag_s, int flag_t, int flag_T, int flag_v) {
     int line_number = 1;
     int last_line_empty = 0;
     char line[MAX_LINE_LENGTH];
@@ -82,19 +96,33 @@ void process_file(FILE *file, int flag_b, int flag_e, int flag_n, int flag_s, in
         }
 
         // Вывод содержимого строки с учетом опций
-        for (char *p = line; *p; p++) {
-            if (flag_t && *p == '\t') {
+        for (unsigned char *p = (unsigned char *)line; *p; p++) {
+            if (flag_T && *p == '\t') {
+                printf("^I");
+            } else if (flag_t && *p == '\t') {
                 printf("^I");
             } else if (flag_e && *p == '\n') {
-                printf("$\n");
+                printf("$");
+            } else if (flag_E && *p == '\n') {
+                printf("$");
+            } else if (flag_v && (*p < 32 || (*p >= 127 && *p < 160))) {
+                if (*p < 32 && *p != '\n' && *p != '\t') {
+                    printf("^%c", *p + 64);
+                } else if (*p >= 127 && *p < 160) {
+                    printf("M-^%c", *p - 64);
+                } else {
+                    putchar(*p);
+                }
             } else {
                 putchar(*p);
             }
         }
 
         // Обработка случая, когда строка не заканчивается новой строкой
-        if (flag_e && line[strlen(line) - 1] != '\n') {
+        if ((flag_e || flag_E) && line[strlen(line) - 1] != '\n') {
             printf("$");
         }
+
+        putchar('\n'); // Добавляем символ новой строки после каждой строки
     }
 }
