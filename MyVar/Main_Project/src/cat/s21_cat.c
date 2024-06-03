@@ -163,9 +163,16 @@ void T(struct flags flag, int *ch) {
 
 void v(struct flags flag, int *ch) {
   if (flag.vflag == 1) {
-    if (*ch > 127 && *ch < 160) printf("M-^");
-    if ((*ch < 32 && *ch != '\n' && *ch != '\t') || *ch == 127) printf("^");
-    if ((*ch < 32 || (*ch > 126 && *ch < 160)) && *ch != '\n' && *ch != '\t')
-      *ch = *ch > 126 ? *ch - 128 + 64 : *ch + 64;
+    if ((*ch < 32 && *ch != '\n' && *ch != '\t') || *ch == 127)
+      printf("^%c", *ch ^ 64);
+    else if (*ch >= 128 && *ch < 160)
+      printf("M-^%c", *ch ^ 128 ^ 64);
+    else if (*ch >= 160) {
+      if (*ch == 255) {
+        printf("M-^?"); // Обработка символа 255
+      } else {
+        printf("M-%c", *ch - 128);
+      }
+    }
   }
 }
