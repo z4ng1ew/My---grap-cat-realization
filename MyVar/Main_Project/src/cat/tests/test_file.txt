@@ -12,20 +12,77 @@
    
    ./s21_cat -b tests/empty_lines_b_s.txt
    
+   number-nonblank
    Ожидаемый результат:
    
-       .Строка 1
-       .Строка 2
+   1   .Строка 1
+   2   .Строка 2
 
 
-       .Строка 3
-       .Строка 4
+   3   .Строка 3
+   4   .Строка 4
    
+
+
+
+   ./s21_cat -s tests/empty_lines_b_s.txt
+
+   Ожидаемый результат:
+
+   1   .Строка 1
+   2   .Строка 2
+
+   3   .Строка 3
+   4   .Строка 4
+
+
+
+
+   ./s21_cat --number-nonblank --number --squeeze-blank tests/empty_lines_b_s.txt
+
+   Ожидаемый результат:
+
+   .Строка 1
+   .Строка 2
+
+   .Строка 3
+   .Строка 4
+
+   
+   
+   
+   ./s21_cat cat  --number tests/empty_lines_b_s.txt
+
+
+         1     .Строка 1
+         2     .Строка 2
+         3
+         4
+         5
+         6     .Строка 3
+         7     .Строка 4
+
+
+
+   ./s21_cat --number-nonblank tests/empty_lines_b_s.txt
+
+     7     .Строка 4 
+     1     .Строка 1
+     2     .Строка 2
+
+
+
+     3     .Строка 3
+     4     .Строка 4root
+
+
 
 
 2. Для файла `spec_char_ev_E_e_.txt`:
    
    ./s21_cat -e tests/spec_char_ev_E_e_.txt
+
+   ./s21_cat -E tests/spec_char_ev_E_e_.txt
    
    Ожидаемый результат:
    
@@ -33,6 +90,10 @@
    This is all$
    Newline$
    
+
+
+
+
 
 
 3. Для файла `numbered_lines_n.txt`:
@@ -50,9 +111,13 @@
    
 
 
-4. Для файла `tabs_vt_T_t_v.txt`:
+
+
+
+
+4. Для файла `Tab_vt_T_t.txt`:
    
-   ./s21_cat -t tests/tabs_vt_T_t_v.txt
+   ./s21_cat -t tests/Tab_vt_T_t.txt 
    
    Ожидаемый результат:
    
@@ -60,6 +125,10 @@
    Hello^IWorld
    Newline$
    
+
+
+
+
 
 
 5. Для файла `test_file.txt`:
@@ -72,3 +141,24 @@
    Он содержит несколько строк текста.
    Этот файл будет использоваться для проверки основной функциональности.
    
+
+
+   6. Для файла non_print.txt
+
+   ./s21_cat -v tests/non_print.txt
+
+   Ожидаемый результат: Вывод всех символов.
+
+
+
+   7. Вывод для не существующей опции:
+
+   ./s21_cat -y tests/non_print.txt
+   
+   Ожидаемый результат:  ./s21_cat: invalid option -- 'y'
+ 
+   ./s21_cat --num tests/empty_lines_b_s.txt
+
+   ./s21_cat: option '--num' is ambiguous; possibilities: '--number-nonblank' '--number'
+   Пожалуйста, используйте следующие опции: beEvnstT
+   root@WIN-VQRNG6QVD9Q:/mnt/c/Users/user/Desktop/C1 - SimpleBashUtils/MyVar/Main_Project/src/cat#

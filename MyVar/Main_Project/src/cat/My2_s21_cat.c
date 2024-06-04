@@ -1,4 +1,4 @@
-#include "My_s21_cat.h"
+#include "My2_s21_cat.h"
 //заменить название структуры на тайп деф
 struct Opt {
     int b, e, E, v, n, s, t, T, d, err_f;

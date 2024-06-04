@@ -23,7 +23,15 @@ struct flags {
   char str_arguments_2[BUFFER];
 } options = {0};
 
+
 int main(int argc, char *argv[]) {
+  if (argc == 1) {
+    // Выводим сообщение о правильном использовании, если не переданы аргументы
+    printf("Usage: grep [OPTION]... PATTERNS [FILE]...\n");
+    printf("Try 'grep --help' for more information.\n");
+    return 1; // Возвращаем код ошибки
+  }
+
   get_opt(argc, argv);
   int counter_files = argc - optind;
   while (optind < argc) {
