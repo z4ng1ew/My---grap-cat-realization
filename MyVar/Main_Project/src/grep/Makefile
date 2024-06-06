@@ -1,5 +1,5 @@
 Project_Name = grep
-Flags = -Wall -Werror -Wextra
+Flags = -Wall -Werror -Wextra -std=c11 -D_POSIX_C_SOURCE=200809L
 
 all: s21_$(Project_Name)
 

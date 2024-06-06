@@ -1,14 +1,9 @@
 #include "s21_cat.h"
 
-struct flags {
- int b, e, E, v, n, s, t, T, d, err_f;
-};
-
-
 int main(int countArg, char **arrPoint) { 
-  struct flags option = {0};
+  flags option = {0}; // Объявляем переменную типа flags
   int exit_status = 0;
-  int number_file = get_opt(countArg, arrPoint, &option);
+  int number_file = get_opt(countArg, arrPoint, &option); // Передаем адрес переменной option
 
   if (option.err_f == 1) {
     printf("Пожалуйста, используйте следующие опции: beEvnstT\n");
@@ -16,7 +11,7 @@ int main(int countArg, char **arrPoint) {
   } else {
     while (number_file < countArg) {  
       char *path = arrPoint[number_file]; 
-      cat(path, option);  
+      cat(path, option); // Теперь передаем саму структуру, а не указатель на нее
       number_file++;  
     }
   }
@@ -24,7 +19,7 @@ int main(int countArg, char **arrPoint) {
   return exit_status;
 }
 
-int get_opt(int countArg, char **arrPoint, struct flags *flag) {
+int get_opt(int countArg, char **arrPoint, flags *flag) {
   int c = 0;
   int option_index = 0;
   static struct option long_options[] = {{"number-nonblank", 0, 0, 'b'},
@@ -39,9 +34,7 @@ int get_opt(int countArg, char **arrPoint, struct flags *flag) {
   return optind;
 }
 
-
-
-void handle_option(int c, struct flags *flag) {
+void handle_option(int c, flags *flag) {
     if (c == 'b') {
         flag->b = 1;
     } else if (c == 'e') {
@@ -65,8 +58,7 @@ void handle_option(int c, struct flags *flag) {
     }
 }
 
-
-void process_file(FILE *filename, struct flags flag) {
+void process_file(FILE *filename, flags flag) {
   int ch, prev = '\n', current_line = 1, str = 0;
   while ((ch = getc(filename)) != EOF) {
     if (s(flag, &prev, &ch, &str)) continue;
@@ -80,7 +72,7 @@ void process_file(FILE *filename, struct flags flag) {
   }
 }
 
-void cat(char *path, struct flags flag) {
+void cat(char *path, flags flag) {
   FILE *filename = fopen(path, "r");
   if (!filename) {
     fprintf(stderr, "No such file or directory\n");
@@ -90,8 +82,7 @@ void cat(char *path, struct flags flag) {
   fclose(filename);
 }
 
-
-int s(struct flags flag, int *prev, int *ch, int *str) {
+int s(flags flag, int *prev, int *ch, int *str) {
   int f = 0;
   if (flag.s == 1 && (*prev == '\n' && *ch == '\n')) {
     *str = *str + 1;
@@ -104,8 +95,7 @@ int s(struct flags flag, int *prev, int *ch, int *str) {
   return f;
 }
 
-
-void b(struct flags flag, int *prev, int *ch, int *current_line) {
+void b(flags flag, int *prev, int *ch, int *current_line) {
   if (flag.b == 1) {
     if (*prev == '\n' && *ch != '\n') {
       printf("%*d\t", 6, *current_line);
@@ -114,7 +104,7 @@ void b(struct flags flag, int *prev, int *ch, int *current_line) {
   }
 }
 
-void n(struct flags flag, int *prev, int *current_line) {
+void n(flags flag, int *prev, int *current_line) {
   if (flag.n == 1) {
     if (*prev == '\n') {
       printf("%*d\t", 6, *current_line);
@@ -123,7 +113,7 @@ void n(struct flags flag, int *prev, int *current_line) {
   }
 }
 
-void E(struct flags flag, int *prev, int *ch) {
+void E(flags flag, int *prev, int *ch) {
   if (flag.E == 1) {
     if (*prev != '\0' && *ch == '\n') {
       if (*prev == '\n' && flag.b) {
@@ -136,7 +126,7 @@ void E(struct flags flag, int *prev, int *ch) {
   }
 }
 
-void T(struct flags flag, int *ch) {
+void T(flags flag, int *ch) {
   if (flag.T == 1) {
     if (*ch == '\t') {
       printf("^");
@@ -145,7 +135,7 @@ void T(struct flags flag, int *ch) {
   }
 }
 
-void v(struct flags flag, int *ch) {
+void v(flags flag, int *ch) {
   if (flag.v == 1) {
     if ((*ch < 32 && *ch != '\n' && *ch != '\t') || *ch == 127)
       printf("^%c", *ch ^ 64);
@@ -153,8 +143,8 @@ void v(struct flags flag, int *ch) {
       printf("M-^%c", *ch ^ 128 ^ 64);
     else if (*ch >= 160) {
       if (*ch == 255) {
-        printf("M-^?"); // Обработка символа 255
-      } else {
+        printf("M-^?"); // Обработка 255
+         } else {
         printf("M-%c", *ch - 128);
       }
     }

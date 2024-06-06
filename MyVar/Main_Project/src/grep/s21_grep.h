@@ -7,14 +7,36 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct flags;
+#define BUFFER 10000
 
-void get_opt(int argc, char *argv[]);
-void grep(int counter_files, char *argv[]);
-void fflag();
-void sym_eof();
-void oflag(int match, regex_t reg, regmatch_t first, int counter_files,
-           char *argv[]);
+typedef struct {
+    int eflag;
+    int iflag;
+    int vflag;
+    int cflag;
+    int lflag;
+    int nflag;
+    int hflag;
+    int sflag;
+    int oflag;
+    int fflag;
+    int lflag_file_match;
+    int nflag_count_str;
+    char arg_namefile[BUFFER];
+    char o_namefile[BUFFER];
+    char arg_fflag[BUFFER];
+    char str_file[BUFFER];
+    char str_arguments[BUFFER];
+    char str_arguments_2[BUFFER];
+} flags;
+
+void get_opt(int argc, char *argv[], flags *options);
+void handle_flag(int opt, flags *options);
+void grep(int counter_files, char *argv[], flags *options);
+void process_file(FILE *file, int counter_files, char *argv[], regex_t *reg, regmatch_t *first, int *counter_str, flags *options);
+void fflag(flags *options);
+void sym_eof(flags *options);
+void oflag(int match, regex_t reg, regmatch_t first, int counter_files, char *argv[], flags *options);
 int main(int argc, char *argv[]);
 
 #endif
