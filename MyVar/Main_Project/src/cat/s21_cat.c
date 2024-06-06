@@ -85,7 +85,7 @@ void cat(char *path, flags flag) {
 int s(flags flag, int *prev, int *ch, int *str) {
   int f = 0;
   if (flag.s == 1 && (*prev == '\n' && *ch == '\n')) {
-    *str = *str + 1;
+    *str += 1;
     if (*str > 1) {
       f = 1;
     }
@@ -99,7 +99,7 @@ void b(flags flag, int *prev, int *ch, int *current_line) {
   if (flag.b == 1) {
     if (*prev == '\n' && *ch != '\n') {
       printf("%*d\t", 6, *current_line);
-      *current_line = *current_line + 1;
+      *current_line += 1;
     }
   }
 }
@@ -108,7 +108,7 @@ void n(flags flag, int *prev, int *current_line) {
   if (flag.n == 1) {
     if (*prev == '\n') {
       printf("%*d\t", 6, *current_line);
-      *current_line = *current_line + 1;
+      *current_line += 1;
     }
   }
 }
